@@ -120,8 +120,10 @@ setup_tmp() {
 downloadFile() {
     LATEST_RELEASE_TAG=$1
 
-    BACALHAU_CLI_ARTIFACT="${BACALHAU_CLI_FILENAME}_${LATEST_RELEASE_TAG}_${OS}_${ARCH}.tar.gz"
+    # BACALHAU_CLI_ARTIFACT="${BACALHAU_CLI_FILENAME}_${LATEST_RELEASE_TAG}_${OS}_${ARCH}.tar.gz"
     # BACALHAU_SIG_ARTIFACT="${BACALHAU_CLI_ARTIFACT}.signature.sha256"
+
+    BACALHAU_CLI_ARTIFACT="${BACALHAU_CLI_FILENAME}_${LATEST_RELEASE_TAG}_${ARCH}.tar.gz"
 
     DOWNLOAD_BASE="https://github.com/${GITHUB_ORG}/${GITHUB_REPO}/releases/download"
 
@@ -168,6 +170,7 @@ verifyTarBall() {
     #     echo "Failed to verify signature of tarball."
     #     exit 1
     # fi
+    echo "NOT verifying tarball"
 }
 
 expandTarball() {
@@ -184,6 +187,7 @@ verifyBin() {
     #     echo "Failed to verify signature of bacalhau binary."
     #     exit 1
     # fi
+    echo "NOT verifying Bin"
 }
 
 
