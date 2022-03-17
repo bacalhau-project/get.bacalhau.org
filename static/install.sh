@@ -239,7 +239,7 @@ trap "fail_trap" EXIT
 
 getSystemInfo
 verifySupported
-checkExistingBACALHAU
+checkExistingBacalhau
 checkHttpRequestCLI
 
 if [ -z "$1" ]; then
