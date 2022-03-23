@@ -105,7 +105,6 @@ getLatestRelease() {
 }
 # --- create temporary directory and cleanup when done ---
 setup_tmp() {
-    BACALHAU_TMP_ROOT=$(mktemp -dt dapr-install-XXXXXX)
     BACALHAU_TMP_ROOT=$(mktemp -d 2>/dev/null || mktemp -d -t 'bacalhau-install.XXXXXXXXXX')
     cleanup() {
         code=$?
