@@ -55,7 +55,7 @@ getSystemInfo() {
         x86_64) ARCH="amd64" ;;
     esac
 
-    OS=$(eval "$(uname)|tr '[:upper:]' '[:lower:]')")
+    OS=$(eval "$(uname)|tr '[:upper:]' '[:lower:]'")
 
     # Most linux distro needs root permission to copy the file to /usr/local/bin
     if [ "$OS" == "linux" ] && [ "$BACALHAU_INSTALL_DIR" == "/usr/local/bin" ]; then
