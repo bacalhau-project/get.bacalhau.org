@@ -177,7 +177,7 @@ downloadFile() {
 verifyTarBall() {
     # echo "ROOT: $BACALHAU_TMP_ROOT"
     # echo "Public Key: $BACALHAU_PUBLIC_KEY"
-    # echo "$BACALHAU_PUBLIC_KEY" > "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem"
+    echo "$BACALHAU_PUBLIC_KEY" > "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem"
     openssl base64 -d -in "$SIG_TMP_FILE" -out "$SIG_TMP_FILE".decoded
     if openssl dgst -sha256 -verify "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem" -signature "$SIG_TMP_FILE".decoded "$CLI_TMP_FILE" ; then
         # Above command echos "Verified Ok"        
