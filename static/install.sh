@@ -74,7 +74,7 @@ verifySupported() {
         fi
     done
 
-    if [ "$osarch" == "darwin-arm64" ]; then
+    if [ "$current_osarch" == "darwin-arm64" ]; then
         echo "Your system is darwin-arm64, which we do not have builds for. However, we do have builds for darwin-amd64, which you can run under Rosetta."
         exit 1
     fi
