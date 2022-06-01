@@ -175,21 +175,21 @@ downloadFile() {
 }
 
 verifyTarBall() {
-    echo "ROOT: $BACALHAU_TMP_ROOT"
-    echo "Public Key: $BACALHAU_PUBLIC_KEY"
-    echo "$BACALHAU_PUBLIC_KEY" > "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem"
+    # echo "ROOT: $BACALHAU_TMP_ROOT"
+    # echo "Public Key: $BACALHAU_PUBLIC_KEY"
+    # echo "$BACALHAU_PUBLIC_KEY" > "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem"
     openssl base64 -d -in "$SIG_TMP_FILE" -out "$SIG_TMP_FILE".decoded
     if openssl dgst -sha256 -verify "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem" -signature "$SIG_TMP_FILE".decoded "$CLI_TMP_FILE" ; then
+        # Above command echos "Verified Ok"        
         return
     else
         echo "Failed to verify signature of tarball."
         exit 1
     fi
-    echo "NOT verifying tarball"
 }
 
 expandTarball() {
-    echo "Extracting and verifying signature..."
+    echo "Extracting tarball ..."
     # echo "Extract tar file - $CLI_TMP_FILE to $BACALHAU_TMP_ROOT"
     tar xzf "$CLI_TMP_FILE" -C "$BACALHAU_TMP_ROOT"
 }
