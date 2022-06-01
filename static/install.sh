@@ -10,10 +10,10 @@
 # ------------------------------------------------------------
 
 # BACALHAU CLI location
-: ${BACALHAU_INSTALL_DIR:="/usr/local/bin"}
+: "${BACALHAU_INSTALL_DIR:="/usr/local/bin"}"
 
 # sudo is required to copy binary to BACALHAU_INSTALL_DIR for linux
-: ${USE_SUDO:="false"}
+: "${USE_SUDO:="false"}"
 
 # Http request CLI
 BACALHAU_HTTP_REQUEST_CLI=curl
@@ -29,7 +29,7 @@ BACALHAU_CLI_FILENAME=bacalhau
 
 BACALHAU_CLI_FILE="${BACALHAU_INSTALL_DIR}/${BACALHAU_CLI_FILENAME}"
 
-BACALHAU_PUBLIC_KEY=`echo "$(cat <<-END
+BACALHAU_PUBLIC_KEY=$(cat <<-END
 -----BEGIN PUBLIC KEY-----
 MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA7bXxrECk3tQfKox7MDaN
 OAQ+NATnILQ9XFfYHs+4Q04lK1tHpvUEwm9OwidMJKlr+M1f/9rzLYV6RDrv0FuA
@@ -45,7 +45,7 @@ L9lmeqYFIvAnBx5rmyE7Hlzqk4pSRfggra0D2ydTV79tUQGlX5wpkwch/s4nRmZb
 rZd9rvTsifOjf2jxGGu5N6ECAwEAAQ==
 -----END PUBLIC KEY-----
 END
-)"`
+)
 
 getSystemInfo() {
     ARCH=$(uname -m)
@@ -55,7 +55,7 @@ getSystemInfo() {
         x86_64) ARCH="amd64" ;;
     esac
 
-    OS=$(echo `uname`|tr '[:upper:]' '[:lower:]')
+    OS=$(eval "$(uname)|tr '[:upper:]' '[:lower:]')")
 
     # Most linux distro needs root permission to copy the file to /usr/local/bin
     if [ "$OS" == "linux" ] && [ "$BACALHAU_INSTALL_DIR" == "/usr/local/bin" ]; then
@@ -81,7 +81,7 @@ verifySupported() {
 runAsRoot() {
     local CMD="$*"
 
-    if [ $EUID -ne 0 -a $USE_SUDO = "true" ]; then
+    if [ $EUID -ne 0 ] && [ $USE_SUDO = "true" ]; then
         CMD="sudo $CMD"
     fi
 
@@ -128,7 +128,7 @@ setup_tmp() {
         code=$?
         set +e
         trap - EXIT
-        rm -rf ${BACALHAU_TMP_ROOT}
+        rm -rf "${BACALHAU_TMP_ROOT}"
         exit $code
     }
     trap cleanup INT EXIT
@@ -178,8 +178,8 @@ verifyTarBall() {
     echo "ROOT: $BACALHAU_TMP_ROOT"
     echo "Public Key: $BACALHAU_PUBLIC_KEY"
     echo "$BACALHAU_PUBLIC_KEY" > "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem"
-    openssl base64 -d -in $SIG_TMP_FILE -out $SIG_TMP_FILE.decoded
-    if openssl dgst -sha256 -verify "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem" -signature $SIG_TMP_FILE.decoded $CLI_TMP_FILE ; then
+    openssl base64 -d -in "$SIG_TMP_FILE" -out "$SIG_TMP_FILE".decoded
+    if openssl dgst -sha256 -verify "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem" -signature "$SIG_TMP_FILE".decoded "$CLI_TMP_FILE" ; then
         return
     else
         echo "Failed to verify signature of tarball."
@@ -191,7 +191,7 @@ verifyTarBall() {
 expandTarball() {
     echo "Extracting and verifying signature..."
     # echo "Extract tar file - $CLI_TMP_FILE to $BACALHAU_TMP_ROOT"
-    tar xzf $CLI_TMP_FILE -C $BACALHAU_TMP_ROOT
+    tar xzf "$CLI_TMP_FILE" -C "$BACALHAU_TMP_ROOT"
 }
 
 verifyBin() {
@@ -202,7 +202,7 @@ verifyBin() {
     #     echo "Failed to verify signature of bacalhau binary."
     #     exit 1
     # fi
-    #echo "NOT verifying Bin"
+    echo "NOT verifying Bin"
 }
 
 
@@ -214,7 +214,7 @@ installFile() {
         exit 1
     fi
 
-    chmod o+x $tmp_root_bacalhau_cli
+    chmod o+x "$tmp_root_bacalhau_cli"
     runAsRoot cp "$tmp_root_bacalhau_cli" "$BACALHAU_INSTALL_DIR"
 
     if [ -f "$BACALHAU_CLI_FILE" ]; then
@@ -267,7 +267,7 @@ fi
 echo "Installing $ret_val BACALHAU CLI..."
 
 setup_tmp
-downloadFile $ret_val
+downloadFile "$ret_val"
 verifyTarBall
 expandTarball
 verifyBin
