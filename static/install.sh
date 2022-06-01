@@ -29,6 +29,24 @@ BACALHAU_CLI_FILENAME=bacalhau
 
 BACALHAU_CLI_FILE="${BACALHAU_INSTALL_DIR}/${BACALHAU_CLI_FILENAME}"
 
+BACALHAU_PUBLIC_KEY=`echo "$(cat <<-END
+-----BEGIN PUBLIC KEY-----
+MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA7bXxrECk3tQfKox7MDaN
+OAQ+NATnILQ9XFfYHs+4Q04lK1tHpvUEwm9OwidMJKlr+M1f/9rzLYV6RDrv0FuA
+xaxGS6xrYwmLiXhDj4KwU3v5e6lHhzupsj+7LNSZ9g+ppCXcw73l5wtNmFojKQDH
+vpKDzB2KKqRq7/TRenNwvMD02zuDcjGdgXSeSiyIZ6jCn9Y6pX7nPF4rOxpFSL/w
+oSb5q5tVY3ZqyrNx/Bk9mBoX3a8xDqFtthuC6SjIF1t5arLih2yEpq8hOdGyyX1l
+uQCYlYuIwsYZL+fj2fFzhqpmrHBB97Npw1bTjnzQ8HQIsxkrMEg9ePFfcRfWw7w6
+nWBLD4JOTFOoi9SPB0BdyqvE8B+6FTlT8XbK7/VtheR4yFVHvrnVkGzIm6AnwINc
+9yFlS5FbxHh0vzL5G4jTYVZrZ7YaQ/zxgZ/SHE9fcSZv4l+W2vlo1EivtOgy1Ee6
+OfDFMvdHyg04qjOGxUzYDxZ4/AL+ywSm1HDXP93Oi8icKXy5OANogW4XZ5hll54g
+4EBqSON/HH4eIvyWTfFG+U6DBtD0Qn4gZO9y1KUNbhDQ0Z6LOC/mKgWhPSKRdFJk
+L9lmeqYFIvAnBx5rmyE7Hlzqk4pSRfggra0D2ydTV79tUQGlX5wpkwch/s4nRmZb
+rZd9rvTsifOjf2jxGGu5N6ECAwEAAQ==
+-----END PUBLIC KEY-----
+END
+)"`
+
 getSystemInfo() {
     ARCH=$(uname -m)
     case $ARCH in
@@ -120,9 +138,7 @@ downloadFile() {
     LATEST_RELEASE_TAG=$1
 
     BACALHAU_CLI_ARTIFACT="${BACALHAU_CLI_FILENAME}_${LATEST_RELEASE_TAG}_${OS}_${ARCH}.tar.gz"
-    # BACALHAU_SIG_ARTIFACT="${BACALHAU_CLI_ARTIFACT}.signature.sha256"
-
-    # BACALHAU_CLI_ARTIFACT="${BACALHAU_CLI_FILENAME}_${LATEST_RELEASE_TAG}_${ARCH}.tar.gz"
+    BACALHAU_SIG_ARTIFACT="${BACALHAU_CLI_ARTIFACT}.signature.sha256"
 
     DOWNLOAD_BASE="https://github.com/${GITHUB_ORG}/${GITHUB_REPO}/releases/download"
 
@@ -144,31 +160,31 @@ downloadFile() {
         exit 1
     fi
 
-    # echo "Downloading sig file $SIG_DOWNLOAD_URL ..."
-    # if [ "$BACALHAU_HTTP_REQUEST_CLI" == "curl" ]; then
-    #     curl -SsLN "$SIG_DOWNLOAD_URL" -o "$SIG_TMP_FILE"
-    # else
-    #     wget -q -O "$SIG_TMP_FILE" "$SIG_DOWNLOAD_URL"
-    # fi
+    echo "Downloading sig file $SIG_DOWNLOAD_URL ..."
+    if [ "$BACALHAU_HTTP_REQUEST_CLI" == "curl" ]; then
+        curl -SsLN "$SIG_DOWNLOAD_URL" -o "$SIG_TMP_FILE"
+    else
+        wget -q -O "$SIG_TMP_FILE" "$SIG_DOWNLOAD_URL"
+    fi
 
-    # if [ ! -f "$SIG_TMP_FILE" ]; then
-    #     echo "failed to download $SIG_DOWNLOAD_URL ..."
-    #     exit 1
-    # fi
+    if [ ! -f "$SIG_TMP_FILE" ]; then
+        echo "failed to download $SIG_DOWNLOAD_URL ..."
+        exit 1
+    fi
 
 }
 
 verifyTarBall() {
-    #echo "ROOT: $BACALHAU_TMP_ROOT"
-    #echo "Public Key: $BACALHAU_PUBLIC_KEY"
-    # echo "$BACALHAU_PUBLIC_KEY" > "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem"
-    # openssl base64 -d -in $SIG_TMP_FILE -out $SIG_TMP_FILE.decoded
-    # if openssl dgst -sha256 -verify "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem" -signature $SIG_TMP_FILE.decoded $CLI_TMP_FILE ; then
-    #     return
-    # else
-    #     echo "Failed to verify signature of tarball."
-    #     exit 1
-    # fi
+    echo "ROOT: $BACALHAU_TMP_ROOT"
+    echo "Public Key: $BACALHAU_PUBLIC_KEY"
+    echo "$BACALHAU_PUBLIC_KEY" > "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem"
+    openssl base64 -d -in $SIG_TMP_FILE -out $SIG_TMP_FILE.decoded
+    if openssl dgst -sha256 -verify "$BACALHAU_TMP_ROOT/BACALHAU_public_file.pem" -signature $SIG_TMP_FILE.decoded $CLI_TMP_FILE ; then
+        return
+    else
+        echo "Failed to verify signature of tarball."
+        exit 1
+    fi
     echo "NOT verifying tarball"
 }
 
@@ -186,7 +202,7 @@ verifyBin() {
     #     echo "Failed to verify signature of bacalhau binary."
     #     exit 1
     # fi
-    echo "NOT verifying Bin"
+    #echo "NOT verifying Bin"
 }
 
 
