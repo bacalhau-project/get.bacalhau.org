@@ -60,6 +60,9 @@ getSystemInfo() {
     # Most linux distro needs root permission to copy the file to /usr/local/bin
     if [ "$OS" == "linux" ] && [ "$BACALHAU_INSTALL_DIR" == "/usr/local/bin" ]; then
         USE_SUDO="true"
+    # Darwin needs permission to copy the file to /usr/local/bin
+    elif [ "$OS" == "darwin" ] && [ "$BACALHAU_INSTALL_DIR" == "/usr/local/bin" ]; then
+        USE_SUDO="true"
     fi
 }
 
