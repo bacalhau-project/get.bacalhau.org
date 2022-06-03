@@ -64,7 +64,7 @@ getSystemInfo() {
 }
 
 verifySupported() {
-    local supported=(linux-amd64 darwin-amd64)
+    local supported=(linux-amd64 darwin-amd64 darwin-arm64)
     local current_osarch="${OS}-${ARCH}"
 
     for osarch in "${supported[@]}"; do
@@ -73,11 +73,6 @@ verifySupported() {
             return
         fi
     done
-
-    if [ "$current_osarch" == "darwin-arm64" ]; then
-        echo "Your system is darwin-arm64, which we do not have builds for. However, we do have builds for darwin-amd64, which you can run under Rosetta."
-        exit 1
-    fi
 
     echo "No prebuilt binary for ${current_osarch}"
     exit 1
