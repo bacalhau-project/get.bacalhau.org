@@ -218,6 +218,7 @@ installFile() {
     fi
 
     chmod o+x "$tmp_root_bacalhau_cli"
+    runAsRoot rm -f "$BACALHAU_INSTALL_DIR/$BACALHAU_CLI_FILENAME"
     runAsRoot cp "$tmp_root_bacalhau_cli" "$BACALHAU_INSTALL_DIR"
 
     if [ -f "$BACALHAU_CLI_FILE" ]; then
