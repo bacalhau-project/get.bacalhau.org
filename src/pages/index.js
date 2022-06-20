@@ -3,7 +3,7 @@ exports.createPages = async ({ graphql, actions }) => {
   const { createRedirect } = actions;
 
   createRedirect({
-    fromPath: `/*`,
+    fromPath: `^/index.sh$`,
     toPath: `https://get.bacalhau.org/index.sh`,
   });
 };
