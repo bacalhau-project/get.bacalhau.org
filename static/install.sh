@@ -270,6 +270,11 @@ else
     ret_val=v$1
 fi
 
+if [ -z "$ret_val" ]; then
+    echo 1>&2 "Error getting latest release..."
+    exit 1
+fi
+
 echo "Installing $ret_val BACALHAU CLI..."
 
 setup_tmp
