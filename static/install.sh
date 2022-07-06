@@ -117,9 +117,9 @@ getLatestRelease() {
     local latest_release=""
 
     if [ "$BACALHAU_HTTP_REQUEST_CLI" == "curl" ]; then
-        latest_release=$(curl -s $bacalhauReleaseUrl | grep \"tag_name\" | grep -v rc | awk 'NR==1{print $2}' |  sed -n 's/\"\(.*\)\",/\1/p')
+        latest_release=$(curl -s $bacalhauReleaseUrl  | grep \"tag_name\" | grep -E -i '"v[0-9]+\.[0-9]+\.[0-9]+"' | grep -v rc | awk 'NR==1{print $2}' | sed -n 's/\"\(.*\)\",/\1/p')
     else
-        latest_release=$(wget -q --header="Accept: application/json" -O - $bacalhauReleaseUrl | grep \"tag_name\" | grep -v rc | awk 'NR==1{print $2}' |  sed -n 's/\"\(.*\)\",/\1/p')
+        latest_release=$(wget -q --header="Accept: application/json" -O - $bacalhauReleaseUrl | grep \"tag_name\" | grep -E -i '^v[0-9]+\.[0-9]+\.[0-9]+$' | grep -v rc | awk 'NR==1{print $2}' |  sed -n 's/\"\(.*\)\",/\1/p')
     fi
 
     ret_val=$latest_release
@@ -268,6 +268,11 @@ if [ -z "$1" ]; then
     getLatestRelease
 else
     ret_val=v$1
+fi
+
+if [ -z "$ret_val" ]; then
+    echo 1>&2 "Error getting latest release..."
+    exit 1
 fi
 
 echo "Installing $ret_val BACALHAU CLI..."
