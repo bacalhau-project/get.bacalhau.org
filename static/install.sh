@@ -105,7 +105,7 @@ checkHttpRequestCLI() {
 checkExistingBacalhau() {
     if [ -f "$BACALHAU_CLI_FILE" ]; then
         echo -e "\nBACALHAU CLI is detected:"
-        $BACALHAU_CLI_FILE --version
+        $BACALHAU_CLI_FILE version
         echo -e "Reinstalling BACALHAU CLI - ${BACALHAU_CLI_FILE}..."
     else
         echo -e "No BACALHAU detected. Installing fresh BACALHAU CLI..."
@@ -226,7 +226,7 @@ installFile() {
     if [ -f "$BACALHAU_CLI_FILE" ]; then
         echo "$BACALHAU_CLI_FILENAME installed into $BACALHAU_INSTALL_DIR successfully."
 
-        $BACALHAU_CLI_FILE --version
+        $BACALHAU_CLI_FILE version
     else
         echo "Failed to install $BACALHAU_CLI_FILENAME"
         exit 1
