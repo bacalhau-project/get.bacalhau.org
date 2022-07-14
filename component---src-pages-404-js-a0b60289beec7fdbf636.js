@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkbacalhau_home_page=self.webpackChunkbacalhau_home_page||[]).push([[883],{429:function(n,e,u){u.r(e),u.d(e,{default:function(){return a}});u(294),u(597);function a(){return"undefined"!=typeof window&&(window.location="/install.sh"),null}}}]);
+//# sourceMappingURL=component---src-pages-404-js-a0b60289beec7fdbf636.js.map
